@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "simplecov"
+
 require "iparty"
 
 RSpec.configure do |config|
