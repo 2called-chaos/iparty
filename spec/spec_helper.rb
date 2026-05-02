@@ -2,6 +2,9 @@
 
 require "simplecov"
 
+require "pathname"
+IPARTY_GEM_ROOT = Pathname.new(File.expand_path("..", __dir__))
+
 require "iparty"
 
 RSpec.configure do |config|
@@ -15,3 +18,6 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+require_relative "support/env_helper"
+require_relative "support/reader_helper"

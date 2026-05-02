@@ -11,12 +11,31 @@ RuboCop::RakeTask.new(:rubocop) do |task|
 end
 
 task default: %i[spec rubocop]
+task ci: %i[early_simplecov fetch_mmdb_files default]
+
 desc "load simplecov early"
 task :early_simplecov do
   require "simplecov"
   SimpleCov.command_name "early"
 end
 
+desc "download mmdb files for testing"
+task :fetch_mmdb_files do
+  require "iparty"
+  IParty.config.directory = Pathname.new(__dir__).join("spec", "cache")
+
+  require "iparty/rake_task"
+  IParty::RakeTask.new
+
+  # always fetch one for coverage
+  smallest = IParty.config.directory.join("GeoLite2-ASN.mmdb")
+  smallest.unlink if smallest.exist?
+
+  Rake::Task["iparty:fetch"].invoke
+
+  # invalid file
+  IParty.config.directory.join("GeoLite2-INVALID.mmdb").binwrite("INVALID")
+end
 
 # ---
 
