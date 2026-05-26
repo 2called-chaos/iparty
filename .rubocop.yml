@@ -35,6 +35,7 @@ Layout/LineLength: { Max: 200 } # def 120
 Layout/SpaceInsideBlockBraces: { SpaceBeforeBlockParameters: false }
 Naming/MemoizedInstanceVariableName: { EnforcedStyleForLeadingUnderscores: required }
 Naming/MethodParameterName: { MinNameLength: 2 } # def 3
+Naming/PredicateMethod: { AllowedMethods: ["call", "format"], AllowedPatterns: [\Aappinfo_] }
 Naming/RescuedExceptionsVariableName: { PreferredName: ex }
 RSpec/ExampleLength: { Max: 20 } # def 5
 RSpec/MultipleExpectations: { Max: 10 } # def 1
