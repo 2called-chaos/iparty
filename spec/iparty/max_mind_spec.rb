@@ -18,15 +18,15 @@ RSpec.describe IParty::MaxMind do
       expect(IParty::MaxMind.db("GeoLite2-Country")).to be_a IParty::MaxMind::Database
     end
 
-    it "uses low memory reader" do
+    it "uses lazy reader" do
       IParty.with_config(eager_load: false) do
-        expect(IParty::MaxMind.db("GeoLite2-Country").instance_variable_get(:@data)).to be_a IParty::MaxMind::LowMemoryReader
+        expect(IParty::MaxMind.db("GeoLite2-Country").instance_variable_get(:@data)).to be_a IParty::MaxMind::LazyReader
       end
     end
 
-    it "uses default reader" do
+    it "uses eager reader" do
       IParty.with_config(eager_load: true) do
-        expect(IParty::MaxMind.db("GeoLite2-Country").instance_variable_get(:@data)).to be_a String
+        expect(IParty::MaxMind.db("GeoLite2-Country").instance_variable_get(:@data)).to be_a IParty::MaxMind::EagerReader
       end
     end
   end

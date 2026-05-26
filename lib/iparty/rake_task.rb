@@ -14,25 +14,91 @@ module IParty
       @verbose = true
 
       yield self if block_given?
-      define
+      define_update
+      define_fetch
+      define_status
+      define_config
     end
 
-    def define
+    def parse_duration input, default = :missing
+      return default unless input.is_a?(String)
+
+      if input.match?(/\A\d+\z/)
+        input.to_i
+      elsif asm = input.match(/\A(\d+)\.(second|minute|hour|day|week|month|year)s?\z/)
+        ActiveSupport::Duration.send(:"#{asm[2]}s", asm[1].to_i)
+      else
+        default
+      end
+    end
+
+    # iparty:update
+    def define_update
       namespace(name) do
-        desc "Fetches missing geoip mmdb-files"
-        task :fetch do
-          Rake.application.lookup("environment")&.invoke
-
-          IParty::MaxMind.fetch_db_files!(:missing, verbose: @verbose)
-        end
-
         desc "Updates geoip mmdb-files"
         task :update do
           Rake.application.lookup("environment")&.invoke
 
           IParty::MaxMind.fetch_db_files!(verbose: @verbose)
         end
+      end
+    end
 
+    # iparty:fetch
+    # iparty:fetch[86400]
+    # iparty:fetch[14.days]
+    def define_fetch
+      namespace(name) do
+        desc "Fetches missing geoip mmdb-files"
+        task :fetch do |task, args|
+          Rake.application.lookup("environment")&.invoke
+
+          IParty::MaxMind.fetch_db_files!(parse_duration(args.extras.first), verbose: @verbose)
+        end
+      end
+    end
+
+    # iparty:status
+    def define_status
+      namespace(name) do
+        desc "Show status of geoip mmdb-files"
+        task :status do |task, args|
+          Rake.application.lookup("environment")&.invoke
+
+          max_age = parse_duration(args.extras.first)
+
+          success = IParty.config.editions.map do |edition|
+            file = IParty.config.directory.join("#{edition}.mmdb")
+            reason = IParty::MaxMind.fetch_db_file_reason(file, max_age)
+
+            stat_string = if file.exist?
+              ctime   = file.ctime
+              age     = Time.now - ctime
+              days    = (age / 86_400).floor
+              hours   = ((age / 3_600) % 24).floor
+              minutes = ((age / 60) % 60).floor
+              age_string = [
+                ("#{days}d" if days > 0),
+                ("%02d:%02d" % [hours, minutes] if hours > 0 || minutes > 0),
+              ].compact.join(" ")
+              age_string = "#{age.floor}s" if age_string.empty?
+              "[age: #{age_string}, ctime: #{ctime}]"
+            end
+
+            puts [reason&.upcase || "OK", stat_string, file].compact.join(" ")
+            !reason
+          end.all?
+
+          exit(1) unless success
+        end
+      end
+    end
+
+    # iparty:config
+    # iparty:config[inspect]
+    # iparty:config[json]
+    def define_config
+      namespace(name) do
         desc "Shows effective IParty config (including license_key)"
         task :config do |task, args|
           Rake.application.lookup("environment")&.invoke

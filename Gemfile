@@ -7,6 +7,7 @@ gemspec
 
 gem "irb"
 gem "rake", "~> 13.0"
+gem "resolv"
 
 gem "rspec", "~> 3.0"
 

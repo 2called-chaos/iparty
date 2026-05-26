@@ -2,7 +2,6 @@
 
 require "fileutils"
 
-require_relative "max_mind/low_memory_reader"
 require_relative "max_mind/database"
 
 module IParty
@@ -18,8 +17,16 @@ module IParty
           return ctn.fetch(edition) if ctn.key?(edition)
         end
 
-        Database.new(file, reader: IParty.config.eager_load ? Database::DEFAULT_READER : Database::LOW_MEMORY_READER).tap do |dbi|
+        Database.new(file, reader: IParty.config.eager_load ? EagerReader : LazyReader).tap do |dbi|
           ctn[edition] ||= dbi if ctn
+        end
+      end
+
+      def lookup edition, *args, close: true, **kw
+        return unless mmdb = db(edition)
+
+        mmdb.lookup(*args, **kw).tap do
+          mmdb.close if close && !IParty.config.singletons
         end
       end
 
@@ -33,7 +40,12 @@ module IParty
           yield(temp_dir)
         ensure
           @in_transaction = false
-          temp_dir.glob("*.mmdb").each {|f| FileUtils.mv(f, IParty.config.directory) }
+          temp_dir.glob("*.mmdb").each do |file|
+            Database.new(file, reader: LazyReader)
+            FileUtils.mv(file, IParty.config.directory)
+          rescue Database::InvalidFileFormatError
+            warn "iparty: ignoring invalid mmdb file: #{file}"
+          end
           FileUtils.rm_rf(temp_dir)
         end
       end
@@ -46,16 +58,29 @@ module IParty
         end
       end
 
-      def fetch_db_file? file, fetch_when = :always
-        fetch_when != :missing || !file.exist?
+      def fetch_db_file_reason file, fetch_when = :always
+        return fetch_when if fetch_when == :always
+        return :missing unless file.exist?
+
+        begin
+          Database.new(file, reader: LazyReader)
+        rescue Database::InvalidFileFormatError
+          return :invalid
+        end
+
+        return unless fetch_when.is_a?(Numeric)
+
+        ctime = file.ctime
+        age = Time.now - ctime
+        :expired unless fetch_when > age
       end
 
       def fetch_db_file! edition, fetch_when = :always, verbose: false
         target_file = IParty.config.directory.join("#{edition}.mmdb")
-        return target_file unless fetch_db_file?(target_file, fetch_when)
+        return target_file unless reason = fetch_db_file_reason(target_file, fetch_when)
 
         with_transactional_update_directory do |temp_dir|
-          puts "fetching #{target_file.basename}" if verbose
+          warn "iparty: fetching #{reason}: #{target_file.basename}" if verbose
           IParty.config.url_to_mmdb.call(
             IParty.config.mirror.gsub(":edition", edition),
             temp_dir,

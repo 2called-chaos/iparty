@@ -17,15 +17,18 @@ Lint/AssignmentInCondition: { Enabled: false }
 Lint/UnusedBlockArgument: { Enabled: false }
 Lint/UnusedMethodArgument: { Enabled: false }
 Metrics/BlockLength: { Enabled: false }
+Naming/BlockForwarding: { Enabled: false }
+Performance/RedundantBlockCall: { Enabled: false }
 RSpec/DescribedClass: { Enabled: false }
 RSpec/SpecFilePathFormat: { Enabled: false }
 Style/ArgumentsForwarding: { Enabled: false }
 Style/Documentation: { Enabled: false }
+Style/FormatString: { Enabled: false }
+Style/FormatStringToken: { Enabled: false }
 Style/MethodDefParentheses: { Enabled: false }
 Style/NumericPredicate: { Enabled: false }
 Style/RedundantStructKeywordInit: { Enabled: false }
 Style/SingleArgumentDig: { Enabled: false }
-Performance/RedundantBlockCall: { Enabled: false }
 
 Layout/EndAlignment: { EnforcedStyleAlignWith: start_of_line }
 Layout/LineLength: { Max: 200 } # def 120
@@ -49,4 +52,6 @@ Metrics/AbcSize: { Max: 51 } # def 17 / t 68
 Metrics/ClassLength: { Max: 200 } # def 100
 Metrics/CyclomaticComplexity: { Max: 14 } # def 7 / t 21
 Metrics/MethodLength: { Max: 64 } # def 10 / t 64
+Metrics/ModuleLength: { Max: 200 } # def 100
+Metrics/ParameterLists: { Max: 8 } # def 5
 Metrics/PerceivedComplexity: { Max: 16 } # def 8 / t 24

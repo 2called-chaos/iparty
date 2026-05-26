@@ -142,6 +142,11 @@ module IParty
       # ------------------------------------------
 
       class Asn < Result
+        def initialize(data = {})
+          data ? super({ autonomous_system_network: data[:network] }.compact.merge(data)) : super()
+        end
+
+        define_attr(:autonomous_system_network, aliases: :network, export: true)
         define_attr(:autonomous_system_number, aliases: :number, export: true)
         define_attr(:autonomous_system_organization, aliases: :organization, export: true)
         define_attr(:autonomous_system_detailed, aliases: :detailed, export: true) { "AS#{number} #{organization}" if number }

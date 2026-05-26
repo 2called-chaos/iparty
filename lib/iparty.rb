@@ -4,7 +4,7 @@ require "tmpdir"
 require "fileutils"
 require "forwardable"
 
-# rubocop:disable Naming/MethodName
+# rubocop:disable Naming/MethodName -- we party!
 def IParty *args, **kw
   IParty.normalize(*args, **kw)
 end
@@ -45,5 +45,23 @@ module IParty
     normalize(input).type
   rescue IPAddr::Error
     :invalid
+  end
+
+  def self.expand_hostnames *ips_or_hosts
+    ips_or_hosts.flatten.flat_map do |name|
+      next name unless name.is_a?(String) && !name.include?(":") && name.match?(/[a-z]/i)
+
+      if defined?(Resolv)
+        Resolv.getaddresses(name)
+      elsif defined?(Addrinfo)
+        begin
+          Addrinfo.getaddrinfo(name, nil).map(&:ip_address).uniq
+        rescue Socket::ResolutionError
+          []
+        end
+      else
+        raise "neither resolv nor addrinfo is available (gem install resolv)"
+      end
+    end
   end
 end

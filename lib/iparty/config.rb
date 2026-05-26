@@ -12,6 +12,7 @@ module IParty
     :local_ip_alias,
     :ipv6_significant,
     :url_to_mmdb,
+    :annotations,
     keyword_init: true,
   ) do
     def singletons=(val)
@@ -28,6 +29,29 @@ module IParty
 
     def env_value *args, **kw, &block
       IParty.env_value(*args, **kw, &block)
+    end
+
+    def annotate *args, **kw
+      self[:annotations] ||= {}
+      result = {}
+      IParty.expand_hostnames(args).each do |net|
+        ipp = IParty(net)
+        kw[:tags] = ((result[ipp] || self[:annotations][ipp] || {})[:tags] || []) | kw[:tags] if kw.key?(:tags)
+        result[ipp] = (result[ipp] || self[:annotations][ipp] || {}).merge(kw)
+      end
+      self[:annotations].merge!(result)
+      result
+    end
+
+    def annotate_tag tags, *args
+      self[:annotations] ||= {}
+      IParty.expand_hostnames(args).to_h do |net|
+        ipp = IParty(net)
+        self[:annotations][ipp] ||= {}
+        self[:annotations][ipp][:tags] ||= []
+        self[:annotations][ipp][:tags] |= Array(tags)
+        [net, self[:annotations][ipp][:tags]]
+      end
     end
   end
 

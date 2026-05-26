@@ -2,7 +2,9 @@
 
 module IParty
   class MaxMind
-    class LowMemoryReader
+    # A low memory file reader for MaxMindDB (mmdb) files. Avoids reading the database into memory.
+    # Has a lower memory footprint but slower lookup times.
+    class LazyReader
       METADATA_MAX_SIZE = 128 * 1024
 
       def initialize path
@@ -12,6 +14,14 @@ module IParty
 
       def [] pos, length = 1
         atomic_read(length, pos)
+      end
+
+      def close
+        @file.close
+      end
+
+      def closed?
+        @file.closed?
       end
 
       def rindex search

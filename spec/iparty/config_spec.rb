@@ -51,4 +51,17 @@ RSpec.describe IParty::Config do
       end
     end
   end
+
+  describe "annotations" do
+    it "annotates" do
+      IParty.with_config do |config|
+        config.annotate "127.0.0.1/8", name: "localhost", tags: %i[local ipv4]
+        config.annotate "::1", name: "localhost", tags: %i[local ipv6]
+        config.annotate_tag %i[local_tag local], "127.0.0.1/8", "::1"
+
+        expect(IParty("127.1.2.3").annotations).to eq(name: "localhost", tags: %i[local ipv4 local_tag])
+        expect(IParty("::1").annotations).to eq(name: "localhost", tags: %i[local ipv6 local_tag])
+      end
+    end
+  end
 end

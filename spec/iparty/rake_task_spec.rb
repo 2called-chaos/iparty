@@ -14,7 +14,7 @@ def clear_rake_namespace namespace
 end
 
 RSpec.describe IParty::RakeTask do
-  let(:iparty_tasks) { %w[fetch update config] }
+  let(:iparty_tasks) { %w[update fetch status config] }
 
   context "with default namespace" do
     it "builds rake tasks" do
@@ -37,6 +37,24 @@ RSpec.describe IParty::RakeTask do
       clear_rake_namespace(:iparty_rspec) do
         IParty::RakeTask.new{|t| t.name = :iparty_rspec }
         iparty_tasks.each {|name| expect(Rake.application.lookup("iparty_rspec:#{name}")).to be_a Rake::Task }
+      end
+    end
+  end
+
+  describe "status task" do
+    it "prints mmdb status" do
+      clear_rake_namespace(:iparty) do
+        IParty::RakeTask.new
+        expect { Rake::Task["iparty:status"].invoke }.to output(/^(OK|MISSING|EXPIRED)/).to_stdout
+      end
+    end
+
+    it "checks expired mmdb" do
+      clear_rake_namespace(:iparty) do
+        IParty::RakeTask.new
+        expect do
+          expect { Rake::Task["iparty:status"].invoke("1") }.to output(/^EXPIRED/).to_stdout
+        end.to raise_error(SystemExit)
       end
     end
   end

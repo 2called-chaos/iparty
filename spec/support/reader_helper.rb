@@ -8,8 +8,8 @@ module ReaderHelper
     let(:invalid_db) { IParty::MaxMind::Database.new(mmdb_directory.join("GeoLite2-INVALID.mmdb"), reader: reader_class) }
 
     [
-      ["DEFAULT_READER", IParty::MaxMind::Database::DEFAULT_READER],
-      ["LOW_MEMORY_READER", IParty::MaxMind::Database::LOW_MEMORY_READER],
+      ["EagerReader", IParty::MaxMind::EagerReader],
+      ["LazyReader", IParty::MaxMind::LazyReader],
     ].each do |desc, klass|
       describe desc do
         let(:reader_class) { klass }

@@ -11,6 +11,13 @@ RSpec.describe IParty::MaxMind::Database do
       expect{ invalid_db.lookup(ip) }.to raise_error(IParty::MaxMind::Database::InvalidFileFormatError)
     end
 
+    it "closes handle" do
+      expect(city_db).to_not be_closed
+      city_db.close
+      expect(city_db).to be_closed
+      expect{ city_db.lookup("1.2.3.4") }.to raise_error(IOError)
+    end
+
     context "with the ip 127.0.0.1" do
       let(:ip) { "127.0.0.1" }
       let(:lookup) { city_db.lookup(ip) }

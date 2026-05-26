@@ -5,8 +5,9 @@ RSpec.describe IParty do
     expect(IParty::VERSION).to_not be_nil
   end
 
-  describe "#normalize" do
+  describe "::normalize" do
     it "returns nil on blank input" do
+      expect(IParty.normalize(nil)).to be_nil
       expect(IParty.normalize("  ")).to be_nil
     end
 
@@ -43,7 +44,7 @@ RSpec.describe IParty do
     end
   end
 
-  describe "#classify" do
+  describe "::classify" do
     it "classifies v4" do
       expect(IParty.classify("1.2.3.4")).to eq :ipv4
     end
@@ -54,6 +55,41 @@ RSpec.describe IParty do
 
     it "classifies invalid" do
       expect(IParty.classify("yomama")).to eq :invalid
+    end
+  end
+
+  describe "::expand_hostnames" do
+    context "with Resolv" do
+      it "resolves valid" do
+        expect(IParty.expand_hostnames("one.one.one.one").sort).to eq %w[1.0.0.1 1.1.1.1 2606:4700:4700::1001 2606:4700:4700::1111]
+      end
+
+      it "resolves invalid to empty array" do
+        expect(IParty.expand_hostnames("INVALID").sort).to eq %w[]
+      end
+    end
+
+    context "without Addrinfo" do
+      before { hide_const("Resolv") }
+
+      it "resolves valid" do
+        expect(IParty.expand_hostnames("one.one.one.one", "8.8.8.8").sort).to eq %w[1.0.0.1 1.1.1.1 2606:4700:4700::1001 2606:4700:4700::1111 8.8.8.8]
+      end
+
+      it "resolves invalid to empty array" do
+        expect(IParty.expand_hostnames("INVALID").sort).to eq %w[]
+      end
+    end
+
+    context "without nothing" do
+      before do
+        hide_const("Resolv")
+        hide_const("Addrinfo")
+      end
+
+      it "fails" do
+        expect { IParty.expand_hostnames("one.one.one.one") }.to raise_error(RuntimeError)
+      end
     end
   end
 end

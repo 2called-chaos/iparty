@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/NumericLiterals
+# rubocop:disable Style/NumericLiterals -- not helpful here
 RSpec.describe IParty::Address do
   describe "v4 ip" do
     subject(:ip) { IParty("1.2.3.4") }
@@ -139,18 +139,29 @@ RSpec.describe IParty::Address do
   end
 
   describe "v6 significance cast" do
-    it "casts to_significant" do
-      ip = IParty("::1", significant: false)
-      expect(ip.ipv6_significant).to be false
-      ip = ip.to_significant
-      expect(ip.ipv6_significant).to be true
+    context "with loopback" do
+      it "skips casting to_insignificant" do
+        ip = IParty("::1", significant: true)
+        expect(ip.ipv6_significant).to be true
+        ip = ip.to_insignificant
+        expect(ip.ipv6_significant).to be true
+      end
     end
 
-    it "casts to_insignificant" do
-      ip = IParty("::1", significant: true)
-      expect(ip.ipv6_significant).to be true
-      ip = ip.to_insignificant
-      expect(ip.ipv6_significant).to be false
+    context "with address" do
+      it "casts to_significant" do
+        ip = IParty("2001:9e8:4aa4:9700:840a:f1ad:2838:f58d", significant: false)
+        expect(ip.ipv6_significant).to be false
+        ip = ip.to_significant
+        expect(ip.ipv6_significant).to be true
+      end
+
+      it "casts to_insignificant" do
+        ip = IParty("2001:9e8:4aa4:9700:840a:f1ad:2838:f58d", significant: true)
+        expect(ip.ipv6_significant).to be true
+        ip = ip.to_insignificant
+        expect(ip.ipv6_significant).to be false
+      end
     end
   end
 end

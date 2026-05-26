@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "lazy_reader"
+require_relative "eager_reader"
 require_relative "result"
 
 module IParty
@@ -8,14 +10,6 @@ module IParty
       class Error < IParty::Error; end
       class InvalidFileFormatError < Error; end
 
-      # The default reader for MaxMindDB (mmdb) files. Reads the database into memory.
-      # This creates a higher memory overhead, but faster lookup times.
-      DEFAULT_READER = proc {|path| File.binread(path) }
-
-      # A low memory file reader for MaxMindDB (mmdb) files. Avoids reading the database into memory.
-      # Has a lower memory footprint but slower lookup times.
-      LOW_MEMORY_READER = proc {|path| LowMemoryReader.new(path) }
-
       METADATA_BEGIN_MARKER = "#{[0xAB, 0xCD, 0xEF].pack("C*")}MaxMind.com".encode("ascii-8bit", "ascii-8bit").freeze
       DATA_SECTION_SEPARATOR_SIZE = 16
       SIZE_BASE_VALUES = [0, 29, 285, 65_821].freeze
@@ -23,9 +17,9 @@ module IParty
 
       attr_reader :metadata
 
-      def initialize(path, reader: DEFAULT_READER)
+      def initialize(path, reader: EagerReader)
         @path = path
-        @data = reader.call(path)
+        @data = reader.new(path)
 
         pos = @data.rindex(METADATA_BEGIN_MARKER) || raise(InvalidFileFormatError, "invalid file format")
         pos += METADATA_BEGIN_MARKER.size
@@ -39,6 +33,14 @@ module IParty
         @data_section_start = @search_tree_size + DATA_SECTION_SEPARATOR_SIZE
       end
 
+      def close
+        @data.close
+      end
+
+      def closed?
+        @data.closed?
+      end
+
       def inspect
         "#<#{self.class}:#{format("0x%x", object_id << 1)}: @path:#{@path} @metadata:#{@metadata}>"
       end
@@ -48,7 +50,7 @@ module IParty
         addr = IParty.config.local_ip_alias if IParty.config.local_ip_alias && addr.loopback?
         addr = IPAddr.new(addr) unless addr.is_a?(IPAddr)
         addr = addr.ipv4_compat if addr.ipv4?
-        long = addr.to_i
+        long = addr.is_a?(IParty::Address) ? addr.to_i(significant: true) : addr.to_i
         node_no = 0
 
         (@start_idx...128).each do |i|
@@ -99,6 +101,7 @@ module IParty
         bytes.inject(0){|r, v| (r << 8) + v }
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity -- we could reduce this, sacrificing the neat overview
       def decode base_pos, pos
         ctrl = @data[base_pos + pos].ord
         pos += 1
@@ -120,7 +123,7 @@ module IParty
             size = val + SIZE_BASE_VALUES[byte_size]
           end
 
-          # rubocop:disable Lint/DuplicateBranch
+          # rubocop:disable Lint/DuplicateBranch -- readable order is more important
           case type
           when 2 # utf8
             decode_utf8(base_pos, pos, size)
@@ -142,9 +145,9 @@ module IParty
             decode_uint(base_pos, pos, size)
           when 11 # array
             decode_array(base_pos, pos, size)
-          when 12 # data cache container
-            raise "TODO:"
-          when 13 # end marker
+          when 12 # (deprecated) data cache container
+            raise "TODO: (deprecated) data cache container format"
+          when 13 # (deprecated) end marker
             [pos, nil]
           when 14 # boolean
             [pos, size != 0]
@@ -154,6 +157,7 @@ module IParty
           # rubocop:enable Lint/DuplicateBranch
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def decode_double base_pos, pos, size
         [pos + size, @data[base_pos + pos, size].unpack1("G")]
