@@ -49,11 +49,11 @@ module IParty
     # iparty:fetch[14.days]
     def define_fetch
       namespace(name) do
-        desc "Fetches missing geoip mmdb-files"
-        task :fetch do |task, args|
+        desc "Fetches missing or expired geoip mmdb-files (optional numeric max_age)"
+        task :fetch, [:max_age] do |task, args|
           Rake.application.lookup("environment")&.invoke
 
-          IParty::MaxMind.fetch_db_files!(parse_duration(args.extras.first), verbose: @verbose)
+          IParty::MaxMind.fetch_db_files!(parse_duration(args[:max_age]), verbose: @verbose)
         end
       end
     end
@@ -61,11 +61,11 @@ module IParty
     # iparty:status
     def define_status
       namespace(name) do
-        desc "Show status of geoip mmdb-files"
-        task :status do |task, args|
+        desc "Show status of geoip mmdb-files (optional numeric max_age)"
+        task :status, [:max_age] do |task, args|
           Rake.application.lookup("environment")&.invoke
 
-          max_age = parse_duration(args.extras.first)
+          max_age = parse_duration(args[:max_age])
 
           success = IParty.config.editions.map do |edition|
             file = IParty.config.directory.join("#{edition}.mmdb")
@@ -99,11 +99,11 @@ module IParty
     # iparty:config[json]
     def define_config
       namespace(name) do
-        desc "Shows effective IParty config (including license_key)"
-        task :config do |task, args|
+        desc "Shows effective IParty config (including license_key, optional format json/inspect)"
+        task :config, [:format] do |task, args|
           Rake.application.lookup("environment")&.invoke
 
-          case args.extras.first
+          case args[:format]
           when "json"
             require "json"
             puts JSON.pretty_generate(IParty.config.to_h)
