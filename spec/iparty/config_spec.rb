@@ -63,5 +63,16 @@ RSpec.describe IParty::Config do
         expect(IParty("::1").annotations).to eq(name: "localhost", tags: %i[local ipv6 local_tag])
       end
     end
+
+    it "checks tags with no tags" do
+      expect(IParty("::1").tag?(:local)).to be false
+    end
+
+    it "checks tags with tags" do
+      IParty.with_config do |config|
+        config.annotate "::1", name: "localhost", tags: %i[local]
+        expect(IParty("::1").tag?(:local)).to be true
+      end
+    end
   end
 end

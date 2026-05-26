@@ -148,6 +148,9 @@ defined?(IParty) && IParty.configure do |config|
 end
 
 IParty("127.1.2.3").annotations # => {:name=>"loopback", :tags=>[:localhost, :local, :ipv4]}
+IParty("127.1.2.3").tag?(:local) # => true
+IParty("69.4.20.0").annotations # => nil
+IParty("69.4.20.0").tag?(:local) # => false
 ```
 
 

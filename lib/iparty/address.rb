@@ -122,6 +122,8 @@ module IParty
     end
 
     def annotations
+      return @_annotations if defined?(@_annotations)
+
       result = {}
       IParty.config.annotations&.each do |ipp, adata|
         next unless ipp.include?(self)
@@ -129,7 +131,13 @@ module IParty
         result.merge!(adata.merge(tags: result.fetch(:tags, []) | adata.fetch(:tags, [])))
       end
 
-      result unless result.empty?
+      @_annotations = result.empty? ? nil : result
+    end
+
+    def tag? tag
+      return false unless tags = annotations&.fetch(:tags, nil)
+
+      tags.include?(tag)
     end
 
     def as_json
