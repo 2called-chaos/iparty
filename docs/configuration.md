@@ -107,7 +107,7 @@ defined?(IParty) && IParty.configure do |config|
   #   addr          the looked up address (as IParty or IPAddr)
   #   result_class  the class that later will get instantiated with data
   config.transform_result = proc do |data, addr, result_class|
-    if addr.loopback?
+    if result_class != IParty::MaxMind::Result::Asn && addr.loopback?
       data[:country] ||= { iso_code: "ZZ", names: { en: "Local" } }
       data[:continent] ||= { code: "ZZ", names: { en: "Local" } }
     end

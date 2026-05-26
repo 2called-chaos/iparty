@@ -1,6 +1,6 @@
 # IParty
 
-## 0.1.0 alpha: risk of party crashers
+## 0.x.x alpha: risk of party crashers
 
 
 Makes (geo) IP fun again! Ain't no party like an IParty, because an IParty don't stop.
