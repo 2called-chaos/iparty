@@ -111,7 +111,14 @@ module IParty
             puts IParty.config.inspect
           else
             IParty.config.each_pair do |key, value|
-              puts "#{key.to_s.rjust(16)}: #{value.inspect}"
+              if key == :annotations && value
+                puts "#{key.to_s.rjust(16)}:"
+                value.each do |ipp, adata|
+                  puts "#{"".rjust(16)}  #{ipp.to_cidr}: #{adata.inspect}"
+                end
+              else
+                puts "#{key.to_s.rjust(16)}: #{value.inspect}"
+              end
             end
           end
         end

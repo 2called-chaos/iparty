@@ -12,8 +12,8 @@ module IParty
     :local_ip_alias,
     :ipv6_significant,
     :url_to_mmdb,
-    :annotations,
     :transform_result,
+    :annotations,
     keyword_init: true,
   ) do
     def singletons=(val)
