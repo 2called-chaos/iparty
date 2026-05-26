@@ -21,6 +21,10 @@ module IParty
 
   @config = default_config
 
+  def self.fetch_db_files! *args, **kw
+    IParty::MaxMind.fetch_db_files!(*args, **kw)
+  end
+
   def self.normalize input, family = nil, native: false, **kw
     return unless input
     return if input.is_a?(String) && input.match?(/\A[[:space:]]*\z/)
