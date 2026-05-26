@@ -63,7 +63,7 @@ RSpec.describe IParty::CLI::Application do
 
   it "dispatches ipinfo for localhost" do
     app.argv << "127.0.0.0"
-    expect{ app.dispatch }.to output("type: ipv4[/32]\n").to_stdout
+    expect{ app.dispatch }.to output("   type: ipv4[/32]\nnetwork: 127.0.0.0/8\n").to_stdout
   end
 
   it "reads from stdin" do

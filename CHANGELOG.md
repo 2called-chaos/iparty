@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 * Include documentation in gem package
+* Automatically set a network for localhost
 
 
 

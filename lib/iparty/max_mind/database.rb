@@ -49,8 +49,8 @@ module IParty
         addr = IPAddr.new(addr) unless addr.is_a?(IPAddr)
         addr = IParty.config.local_ip_alias if IParty.config.local_ip_alias && addr.loopback?
         addr = IPAddr.new(addr) unless addr.is_a?(IPAddr)
-        addr = addr.ipv4_compat if addr.ipv4?
-        long = addr.is_a?(IParty::Address) ? addr.to_i(significant: true) : addr.to_i
+        compat_addr = addr.ipv4? ? addr.ipv4_compat : addr
+        long = compat_addr.is_a?(IParty::Address) ? compat_addr.to_i(significant: true) : compat_addr.to_i
         node_no = 0
 
         (@start_idx...128).each do |i|
@@ -62,7 +62,11 @@ module IParty
           elsif next_node_no >= @node_count
             pos = (next_node_no - @node_count) - DATA_SECTION_SEPARATOR_SIZE
             result           = decode(@data_section_start, pos)[1]
-            result[:network] = cidr_from_long(long, i) unless result.empty?
+            result[:network] = if !result.empty?
+              cidr_from_long(long, i)
+            elsif addr.loopback?
+              @family == Socket::AF_INET6 ? "::1/128" : "127.0.0.0/8"
+            end
             return result_class.new(result)
           else
             node_no = next_node_no

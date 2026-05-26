@@ -27,7 +27,7 @@ RSpec.describe IParty::MaxMind::Database do
       end
 
       it "doesn't find data" do
-        expect(lookup).to be_empty
+        expect(lookup.keys).to eq %i[network]
       end
     end
 
