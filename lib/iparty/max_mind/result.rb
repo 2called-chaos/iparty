@@ -45,10 +45,10 @@ module IParty
       end
 
       class NamedLocation < Result
-        define_attr(:code)
+        define_attr(:code, memoize: false) {|v| v || self[:iso_code] }
         define_attr(:geoname_id)
         define_attr(:is_in_european_union, aliases: :in_european_union?)
-        define_attr(:iso_code)
+        define_attr(:iso_code, memoize: false) {|v| v || self[:code] }
         define_attr(:names, type: Result)
 
         def name(locale = :en, fallback_locale: :en)
@@ -75,7 +75,7 @@ module IParty
 
         # dynamic inquiry
         define_attr(:inquire_on_name) { name&.downcase&.tr(" ", "_") }
-        define_attr(:inquire_on_code) { (iso_code || code)&.downcase }
+        define_attr(:inquire_on_code) { iso_code&.downcase }
 
         def respond_to_missing? method_name, include_private = false
           method_name.end_with?("?") || super
