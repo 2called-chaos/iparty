@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+* Include documentation in gem package
+
+
+
 ## [0.1.1] - 2026-05-26
 
 * Add missing pathname dependency (stdlib)
