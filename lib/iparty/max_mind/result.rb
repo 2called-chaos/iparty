@@ -41,7 +41,7 @@ module IParty
         define_attr(:latitude)
         define_attr(:longitude)
         define_attr(:metro_code)
-        define_attr(:time_zone)
+        define_attr(:time_zone, aliases: :timezone)
       end
 
       class NamedLocation < Result
@@ -170,7 +170,7 @@ module IParty
         define_attr(:latitude, memoize: false, export: true) { location.latitude }
         define_attr(:longitude, memoize: false, export: true) { location.longitude }
         define_attr(:metro_code, memoize: false) { location.metro_code }
-        define_attr(:time_zone, memoize: false, export: true) { location.time_zone }
+        define_attr(:time_zone, memoize: false, aliases: :timezone, export: true) { location.time_zone }
         define_attr(:postal_code, aliases: :zip, export: true, memoize: false) { postal.code }
 
         define_attr(:detailed_parts, memoize: false) { [continent.code, country.name, city.name].compact }

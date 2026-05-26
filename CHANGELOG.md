@@ -5,6 +5,7 @@
 * Add config option (proc) transform_result
 * iso_code fallbacks to code and vice versa so you don't have to think about it (continent has code and rest has iso_code).
   This only applies to method access, `[:code]` does not fallback.
+* Add alias `timezone` for `time_zone`
 
 
 
