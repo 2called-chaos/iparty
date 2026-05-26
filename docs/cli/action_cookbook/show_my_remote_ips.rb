@@ -15,10 +15,16 @@ def dispatch_me
     formatter.colorize? ? c("ERROR", :red) : :ERROR
   end
 
-  out << formatter.format("my external ips") do
-    onlyexcept_data!(
-      ipv4: get_ip["https://api.ipify.org"],
-      ipv6: get_ip["https://api6.ipify.org"],
-    )
+  if the_more_clever_way = true
+    @argv << get_ip["https://api.ipify.org"]
+    @argv << get_ip["https://api6.ipify.org"]
+    dispatch_info
+  else
+    out << formatter.format("my external ips") do
+      onlyexcept_data!(
+        ipv4: get_ip["https://api.ipify.org"],
+        ipv6: get_ip["https://api6.ipify.org"],
+      )
+    end
   end
 end
