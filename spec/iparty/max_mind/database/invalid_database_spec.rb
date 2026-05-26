@@ -13,7 +13,7 @@ RSpec.describe IParty::MaxMind::Database do
     context "with invalid database file" do
       it "raises error" do
         expect do
-          IParty::MaxMind::Database.new(IPARTY_GEM_ROOT.join("spec", "spec_helper.rb"), reader: reader_class)
+          IParty::MaxMind::Database.new(IParty::GEM_ROOT.join("spec", "spec_helper.rb"), reader: reader_class)
         end.to raise_error IParty::MaxMind::Database::InvalidFileFormatError
       end
     end

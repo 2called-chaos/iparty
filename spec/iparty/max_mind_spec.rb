@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe IParty::MaxMind do
-  let(:mmdb_directory) { IPARTY_GEM_ROOT.join("spec", "cache") }
+  let(:mmdb_directory) { IParty::GEM_ROOT.join("spec", "cache") }
 
   around {|example| IParty.with_config(directory: mmdb_directory, &example) }
 

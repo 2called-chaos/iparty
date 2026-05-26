@@ -5,7 +5,7 @@ require "iparty/cli/application"
 RSpec.describe IParty::CLI::Application do
   around {|example| IParty.with_config(directory: mmdb_directory, &example) }
 
-  let(:mmdb_directory) { IPARTY_GEM_ROOT.join("spec", "cache") }
+  let(:mmdb_directory) { IParty::GEM_ROOT.join("spec", "cache") }
 
   let(:app_env) { {} }
   let(:app_argv) { ["--no-rc", "--monochrome"] }
@@ -13,7 +13,7 @@ RSpec.describe IParty::CLI::Application do
   let(:app) { described_class.new(env: app_env, argv: app_argv, argf: app_argf, mmdb_fetch_when: :missing) }
 
   context "with RC" do
-    let(:app_env) { { "IPARTY_CFGDIR" => IPARTY_GEM_ROOT.join("spec", "data", "clirc") } }
+    let(:app_env) { { "IPARTY_CFGDIR" => IParty::GEM_ROOT.join("spec", "data", "clirc") } }
     let(:app_argv) { ["--monochrome"] }
 
     it "initializes with rc" do
@@ -22,7 +22,7 @@ RSpec.describe IParty::CLI::Application do
   end
 
   context "with inaccessible RC" do
-    let(:app_env) { { "IPARTY_CFGDIR" => IPARTY_GEM_ROOT.join("fail") } }
+    let(:app_env) { { "IPARTY_CFGDIR" => IParty::GEM_ROOT.join("fail") } }
     let(:app_argv) { ["--monochrome"] }
 
     it { expect{ app }.to_not raise_error }

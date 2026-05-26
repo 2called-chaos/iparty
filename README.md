@@ -20,7 +20,7 @@ ip.country == "Germany" # 🤨
 * IParty handles download\* and decoding of, and lookup in, mmdb-files (\* = shelling to curl and tar)
 * IParty lets you annotate IPs/networks with arbitrary helpers, data and tags
 * IParty lets you ignore the MAC address part of an ipv6 address more easily
-* IParty has *no*\* dependencies (\* = stdlib dependencies: fileutils, forwardable, tmpdir, optparse)
+* IParty has *no*\* dependencies (\* = stdlib dependencies: fileutils, forwardable, tmpdir, pathname, optparse)
 * IParty is essentially a fork/refactor of the [maxminddb](https://github.com/yhirose/maxminddb) gem.
   The reimaginated implementation details were however too party for a pull request in my opinion.
 * IParty parties hard!

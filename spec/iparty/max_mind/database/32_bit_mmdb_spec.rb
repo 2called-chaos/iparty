@@ -2,7 +2,7 @@
 
 RSpec.describe IParty::MaxMind::Database do
   each_reader_class do
-    let(:mmdb_directory) { IPARTY_GEM_ROOT.join("spec", "data") }
+    let(:mmdb_directory) { IParty::GEM_ROOT.join("spec", "data") }
 
     context "with 32bit record data mmdb" do
       subject(:rec32_db) { IParty::MaxMind::Database.new(mmdb_directory.join("32bit_record_data.mmdb"), reader: reader_class) }

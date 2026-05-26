@@ -7,7 +7,7 @@ RSpec.describe IParty::CLI::Application::IrbContext do
 
   around {|example| IParty.with_config(directory: mmdb_directory, &example) }
 
-  let(:mmdb_directory) { IPARTY_GEM_ROOT.join("spec", "cache") }
+  let(:mmdb_directory) { IParty::GEM_ROOT.join("spec", "cache") }
 
   let(:app_env) { {} }
   let(:app_argv) { ["--no-rc", "-m"] }

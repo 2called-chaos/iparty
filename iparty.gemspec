@@ -36,5 +36,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "fileutils"
   spec.add_dependency "forwardable"
   spec.add_dependency "optparse"
+  spec.add_dependency "pathname"
   spec.add_dependency "tmpdir"
 end

@@ -2,9 +2,6 @@
 
 require "simplecov"
 
-require "pathname"
-IPARTY_GEM_ROOT = Pathname.new(File.expand_path("..", __dir__))
-
 require "iparty"
 
 RSpec.configure do |config|

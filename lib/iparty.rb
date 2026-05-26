@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "pathname"
 require "tmpdir"
 require "fileutils"
 require "forwardable"
@@ -12,6 +13,8 @@ end
 
 module IParty
   class Error < StandardError; end
+
+  GEM_ROOT = Pathname.new(File.expand_path("..", __dir__))
 
   require_relative "iparty/version"
   require_relative "iparty/config"

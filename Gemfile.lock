@@ -5,6 +5,7 @@ PATH
       fileutils
       forwardable
       optparse
+      pathname
       tmpdir
 
 GEM
@@ -31,6 +32,7 @@ GEM
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
+    pathname (0.5.0)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
@@ -134,6 +136,7 @@ CHECKSUMS
   optparse (0.8.1) sha256=42bea10d53907ccff4f080a69991441d611fbf8733b60ed1ce9ee365ce03bd1a
   parallel (2.1.0) sha256=b35258865c2e31134c5ecb708beaaf6772adf9d5efae28e93e99260877b09356
   parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
+  pathname (0.5.0) sha256=d5a331784f6e1f2fefb31c2ff0b8855aabfb661d807284ead9fa47b883d81623
   pp (0.6.3) sha256=2951d514450b93ccfeb1df7d021cae0da16e0a7f95ee1e2273719669d0ab9df6
   prettyprint (0.2.0) sha256=2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85

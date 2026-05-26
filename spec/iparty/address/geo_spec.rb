@@ -3,7 +3,7 @@
 RSpec.describe IParty::Address do
   geo_methods = %w[asn geo_city geo_country geo].freeze
 
-  let(:mmdb_directory) { IPARTY_GEM_ROOT.join("spec", "cache") }
+  let(:mmdb_directory) { IParty::GEM_ROOT.join("spec", "cache") }
 
   {
     "#geo (v4)" => "4.78.241.0",
