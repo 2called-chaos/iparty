@@ -1,12 +1,15 @@
+# local-only
 /.bundle/
 /.yardoc
 /_yardoc/
-/coverage/
-/doc/
+/local/
 /pkg/
-/spec/reports/
-/tmp/
+.env*
 
+# temp files
+/coverage/
+/tmp/
+/spec/reports/
 /spec/cache/*
 !/spec/cache/.keep
 
