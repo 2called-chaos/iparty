@@ -67,6 +67,7 @@ module IParty
             elsif addr.loopback?
               @family == Socket::AF_INET6 ? "::1/128" : "127.0.0.0/8"
             end
+            IParty.config.transform_result&.call(result, addr, result_class)
             return result_class.new(result)
           else
             node_no = next_node_no

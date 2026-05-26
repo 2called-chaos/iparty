@@ -101,6 +101,18 @@ defined?(IParty) && IParty.configure do |config|
 
   # --- following is example code and not default behaviour ---
 
+  # Proc to transform geo result data, by default does nothing.
+  # yields
+  #   data          the result hash
+  #   addr          the looked up address (as IParty or IPAddr)
+  #   result_class  the class that later will get instantiated with data
+  config.transform_result = proc do |data, addr, result_class|
+    if addr.loopback?
+      data[:country] ||= { iso_code: "ZZ", names: { en: "Local" } }
+      data[:continent] ||= { code: "ZZ", names: { en: "Local" } }
+    end
+  end
+
   # For more info on extending look at docs/maxmind_result.md
   IParty::Address.define_method(:detailed) do |*args|
     "#{to_s} -- #{geo.detailed} -- #{asn.detailed}"

@@ -13,6 +13,7 @@ module IParty
     :ipv6_significant,
     :url_to_mmdb,
     :annotations,
+    :transform_result,
     keyword_init: true,
   ) do
     def singletons=(val)
@@ -135,6 +136,18 @@ module IParty
           tar = %{tar xz --strip-components 1 --exclude "*.txt" --no-same-owner -C #{dir.to_s.shellescape}}
           system("#{curl} | #{tar}")
         end,
+
+        # Proc to transform geo result data, by default does nothing.
+        # yields
+        #   data          the result hash
+        #   addr          the looked up address (as IParty or IPAddr)
+        #   result_class  the class that later will get instantiated with data
+        # transform_result: proc do |data, addr, result_class|
+        #   if addr.loopback?
+        #     data[:country] ||= { iso_code: "ZZ", names: { en: "Local" } }
+        #     data[:continent] ||= { code: "ZZ", names: { en: "Local" } }
+        #   end
+        # end,
       )
     end
   end
