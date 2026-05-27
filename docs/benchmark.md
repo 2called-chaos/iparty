@@ -5,31 +5,31 @@
 This is the result of `script/benchmark.rb` on my M1.
 
 ```
-RSS-before[uncached]: 30.31 MB
+RSS-before[uncached]: 28.98 MB
 ruby 3.3.6 (2024-11-05 revision 75015d4c1f) [arm64-darwin21]
 Warming up --------------------------------------
             uncached   145.000 i/100ms
 Calculating -------------------------------------
-            uncached      1.448k (± 1.9%) i/s  (690.59 μs/i) -     14.500k in  10.017464s
-RSS-after[uncached]: 48.75 MB
+            uncached      1.454k (± 2.1%) i/s  (687.88 μs/i) -     87.290k in  60.075809s
+RSS-after[uncached]: 49.45 MB
 
 
-RSS-before[singletons]: 29.77 MB
+RSS-before[singletons]: 30.17 MB
 ruby 3.3.6 (2024-11-05 revision 75015d4c1f) [arm64-darwin21]
 Warming up --------------------------------------
-          singletons   162.000 i/100ms
+          singletons   163.000 i/100ms
 Calculating -------------------------------------
-          singletons      1.565k (± 8.0%) i/s  (638.87 μs/i) -     15.552k in  10.006033s
-RSS-after[singletons]: 31.27 MB
+          singletons      1.633k (± 1.3%) i/s  (612.35 μs/i) -     98.126k in  60.097790s
+RSS-after[singletons]: 31.28 MB
 
 
-RSS-before[eager_load]: 30.20 MB
+RSS-before[eager_load]: 30.62 MB
 ruby 3.3.6 (2024-11-05 revision 75015d4c1f) [arm64-darwin21]
 Warming up --------------------------------------
-          eager_load   500.000 i/100ms
+          eager_load   449.000 i/100ms
 Calculating -------------------------------------
-          eager_load      4.940k (± 4.1%) i/s  (202.43 μs/i) -     49.500k in  10.038651s
-RSS-after[eager_load]: 112.73 MB
+          eager_load      4.566k (± 1.3%) i/s  (219.02 μs/i) -    274.339k in  60.095499s
+RSS-after[eager_load]: 114.52 MB
 ```
 
 ### Personal conclusion

@@ -4,6 +4,7 @@
 
 * `IParty.config.singletons = true` will no longer cause immediate init of database objects. Use `IParty.config.init_singletons!` after you've set all options if you want "true behaviour".
   If the value is set to true `init_singletons!` will be called the first time a database object is initialized.
+* Add dev script to test performance with rbspy
 * [cli] Add cookbook helper
 * [cli] Show dispatchable actions in verbose appinfo
 
