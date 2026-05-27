@@ -179,3 +179,24 @@ rake iparty:config[json]
 # check mmdb file status
 rake iparty:status
 ```
+
+
+
+### CurrentAttribute cache (ActiveSupport <8)
+
+This works around the lack of `default` keyword support in older ActiveSupport.
+
+```ruby
+class IPartyCache < ActiveSupport::CurrentAttributes
+  attribute(:databases)
+  attribute(:ip)
+
+  def databases
+    super || attributes[:databases] = {}
+  end
+
+  def ip
+    super || attributes[:ip] = Hash.new{|h, ip| h[ip.to_s] = IParty(ip.to_s) }
+  end
+end
+```
