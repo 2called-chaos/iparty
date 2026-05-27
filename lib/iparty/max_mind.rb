@@ -13,7 +13,12 @@ module IParty
         return unless file.exist?
 
         if ctn = IParty.config.singletons
-          ctn = ctn.call if ctn.is_a?(Proc)
+          if ctn.is_a?(Proc)
+            ctn = ctn.call
+          elsif ctn == true
+            ctn = IParty.config.init_singletons!
+          end
+
           return ctn.fetch(edition) if ctn.key?(edition)
         end
 

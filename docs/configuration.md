@@ -30,7 +30,7 @@ IParty(request.remote_ip).best_tenant # => :us
 
 ### Full config
 
-This config, minus the CurrentAttributes cache is default config. For basic usage you only need account_id/license_key.
+Apart from the examples this config represents default behaviour. For basic usage you only need account_id/license_key.
 Please also take a look at docs/maxmind_result.md for extending the address and geo results.
 
 ```ruby
@@ -41,33 +41,6 @@ defined?(IParty) && IParty.configure do |config|
   #   * #ipv6_significant accessors
   #   * significant: keyword (affected methods only but including new/initialize)
   config.ipv6_significant = config.env_value("IPARTY_IPV6_SIGNIFICANT", true)
-
-  # Whether to use the low memory file reader or load mmdb into memory as a whole (see docs/benchmark.md)
-  config.eager_load = config.env_value("IPARTY_EAGER_LOAD", false)
-
-  # Use singleton instances of MaxMind::Database readers.
-  # These are lazily initialized so in a threaded environment or with eager load enabled you should pre-init them.
-  # Side Effect: You will have to reboot your app for mmdb changes to take effect.
-  config.singletons = config.env_value("IPARTY_SINGLETONS", false)
-  #config.singletons = {} # lazy load singleton instances, not thread-safe
-  #config.singletons = true # eagerly init all editions (eager_load into memory if enabled, thread-safe after init)
-
-  # alternatively you can do something like this:
-  # * singleton DB instances (lazily memoized) per-request (eager load should be disabled)
-  # * IParty::Address cache (including their geo lookups)
-  if defined?(ActiveSupport::CurrentAttributes)
-    class IPartyCache < ActiveSupport::CurrentAttributes
-      attribute(:databases, default: {})
-
-      # cached IParty addresses, i.e. IPartyCache.ips["1.2.3.4"]
-      # Be wary of mutating (i.e. mask!), use clones
-      attribute(:ips, default: -> { Hash.new{|h, ip| h[ip.to_s] = IParty(ip.to_s) } })
-    end
-    config.singletons = -> { IPartyCache.databases }
-  end
-
-  # An IP that is used instead of local IPs
-  config.local_ip_alias = config.env_value("IPARTY_LOCAL_IP_ALIAS", nil)
 
   # MaxMind account_id and license_key aka mirror basic-auth
   config.account_id = config.env_value("MAXMIND_ACCOUNT_ID", nil)
@@ -99,7 +72,51 @@ defined?(IParty) && IParty.configure do |config|
     system("#{curl} | #{tar}")
   end
 
+  # An IP that is used instead of local IPs
+  config.local_ip_alias = config.env_value("IPARTY_LOCAL_IP_ALIAS", nil)
+
+  # Whether to use the low memory file reader or load mmdb into memory as a whole (see docs/benchmark.md)
+  config.eager_load = config.env_value("IPARTY_EAGER_LOAD", false)
+
+  # Use singleton instances of MaxMind::Database readers.
+  # These are lazily initialized so in a threaded environment or with eager load enabled you should pre-init them.
+  # Side Effect: You will have to reboot your app for mmdb changes to take effect.
+  # See per-request singletons+cache in examples below.
+  config.singletons = config.env_value("IPARTY_SINGLETONS", false)
+
+  # Lazy load singleton instances, not thread-safe
+  #config.singletons = {}
+
+  # Eager load instances (eager_load into memory if enabled)
+  # WARNING: do that after all other options!
+  #config.init_singletons!
+
+
   # --- following is example code and not default behaviour ---
+
+
+  # You may want to rely on rake task and/or ensure on app boot?
+  #   fetch_when can be
+  #     * :always
+  #     * :missing
+  #     * (Numeric) maxAge (i.e. (int)seconds or (AS::Duration)14.days)
+  IParty.fetch_db_files!(:missing, verbose: true)
+
+
+  # Per-request singletons and IP cache (ActiveSupport 8+):
+  # * singleton DB instances (lazily memoized) per-request (eager_load should be disabled)
+  # * IParty::Address cache (including their geo lookups)
+  if defined?(ActiveSupport::CurrentAttributes)
+    class IPartyCache < ActiveSupport::CurrentAttributes
+      attribute(:databases, default: {})
+
+      # cached IParty addresses, i.e. IPartyCache.ip["1.2.3.4"]
+      # Be wary of mutating (i.e. mask!), use clones
+      attribute(:ip, default: -> { Hash.new{|h, ip| h[ip.to_s] = IParty(ip.to_s) } })
+    end
+    config.singletons = -> { IPartyCache.databases }
+  end
+
 
   # Proc to transform geo result data, by default does nothing.
   # yields
@@ -113,17 +130,11 @@ defined?(IParty) && IParty.configure do |config|
     end
   end
 
+
   # For more info on extending look at docs/maxmind_result.md
   IParty::Address.define_method(:detailed) do |*args|
     "#{to_s} -- #{geo.detailed} -- #{asn.detailed}"
   end
-
-  # You may want to rely on rake task and/or ensure on app boot?
-  #   fetch_when can be
-  #     * :always
-  #     * :missing
-  #     * (Numeric) maxAge (i.e. (int)seconds or (AS::Duration)14.days)
-  IParty.fetch_db_files!(:missing, verbose: true)
 end
 ```
 

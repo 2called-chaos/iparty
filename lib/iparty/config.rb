@@ -18,7 +18,6 @@ module IParty
   ) do
     def singletons=(val)
       self[:singletons] = val
-      init_singletons! if val == true
     end
 
     def init_singletons!
