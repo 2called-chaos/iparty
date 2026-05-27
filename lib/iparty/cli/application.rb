@@ -47,6 +47,13 @@ module IParty
         yield(self) if block_given?
       end
 
+      def cookbook *recipes
+        recipes.flatten.each do |recipe|
+          file = IParty::GEM_ROOT.join("docs", "cli", "action_cookbook", "#{recipe}.rb")
+          instance_eval(file.read, "#{caller(3..3).first}, eval #{file}")
+        end
+      end
+
       def ensure_mmdb_files! fetch_when = @opts[:mmdb_fetch_when]
         IParty::MaxMind.fetch_db_files!(fetch_when, verbose: true)
       end

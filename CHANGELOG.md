@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [0.1.3] - Unreleased
+
+* [cli] Add cookbook helper
+
+
+
 ## [0.1.2] - 2026-05-27
 
 * Include documentation in gem package

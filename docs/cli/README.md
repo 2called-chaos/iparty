@@ -51,19 +51,28 @@ Also look at the action cookbook in `docs/cli/action_cookbook`.
 # For IParty options refer to the IParty documentation.
 #     https://github.com/2called-chaos/iparty/blob/master/README.md
 
-IParty.config.annotate "1.1.1.1", "1.0.0.1", tags: %i[cloudflare_dns]
-IParty.config.annotate_tag %i[loopback], "127.0.0.1/8", "::1"
+IParty.config.account_id = "..."
+IParty.config.license_key = "..."
+
+# tip: tidy up with offloading to `require_relative "annotations"`
+IParty.configure do |config|
+  config.annotate "1.1.1.1", "1.0.0.1", tags: %i[cloudflare_dns]
+  config.annotate_tag %i[loopback], "127.0.0.1/8", "::1"
+end
 
 
-# Change defaults (arguments will still override)
+# Change CLI defaults (arguments will still override)
 # For CLI options refer to application/options.rb#default_options
 #     https://github.com/2called-chaos/iparty/blob/master/lib/iparty/cli/application/options.rb
 
-# @opts[:summarize] = false
-# @opts[:except] += [
-#   "registered_country",
-#   "subdivisions",
-# ]
+@opts[:summarize] = false
+@opts[:except] += [
+  "registered_country",
+  "subdivisions",
+]
+
+# This will eval (usable) examples from docs/cli/action_cookbook
+cookbook("show_my_remote_ips")
 
 
 
