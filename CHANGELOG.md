@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-27
+
 * Include documentation in gem package
 * Automatically set a network for localhost
 * Add config option (proc) transform_result
