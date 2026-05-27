@@ -20,7 +20,7 @@ module IParty
         # via -v/--version
         def dispatch_appinfo pad: 20
           parts = if @opts[:debug]
-            %i[runtime cli_opts cli_config formatters iparty_config mmdb_status]
+            %i[runtime cli_opts cli_config actions formatters iparty_config mmdb_status]
           else
             %i[runtime cli_config mmdb_status]
           end

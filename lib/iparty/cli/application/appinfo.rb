@@ -73,10 +73,23 @@ module IParty
           end.all?
         end
 
+        def appinfo_actions pad: 20
+          pad = -2 if pad.zero?
+
+          puts c("#{"".rjust(pad + 2)}# Available actions (-d)", :magenta)
+          methods.grep(/^dispatch_/).reverse_each do |name|
+            puts [
+              c("#{"".rjust(pad)}* "),
+              c(name.to_s.delete_prefix("dispatch_"), :blue),
+              c(" in #{method(name).source_location.join(":")}", :black),
+            ].join
+          end
+        end
+
         def appinfo_formatters pad: 20
           pad = -2 if pad.zero?
 
-          puts c("#{"".rjust(pad + 2)}# Available formatters", :magenta)
+          puts c("#{"".rjust(pad + 2)}# Available formatters (-f)", :magenta)
           CLI::Formatter.descendants.each do |fmt|
             name = fmt.to_s
             source_location = begin

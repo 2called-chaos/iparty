@@ -3,6 +3,7 @@
 ## [0.1.3] - Unreleased
 
 * [cli] Add cookbook helper
+* [cli] Show dispatchable actions in verbose appinfo
 
 
 
