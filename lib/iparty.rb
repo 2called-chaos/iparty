@@ -28,6 +28,12 @@ module IParty
     IParty::MaxMind.fetch_db_files!(*args, **kw)
   end
 
+  def self.insignificant long, **kw
+    return unless long
+
+    Address.from_insignificant(long, **kw)
+  end
+
   def self.normalize input, family = nil, native: false, **kw
     return unless input
     return if input.is_a?(String) && input.match?(/\A[[:space:]]*\z/)

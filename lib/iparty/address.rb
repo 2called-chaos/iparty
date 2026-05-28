@@ -6,6 +6,10 @@ module IParty
   class Address < IPAddr
     extend Forwardable
 
+    def self.from_insignificant long, **kw
+      new((long << 64) & ((1 >> 64) - 1), Socket::AF_INET6, **kw)
+    end
+
     attr_accessor :ipv6_significant
 
     def initialize *args, **kw
