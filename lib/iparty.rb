@@ -46,6 +46,8 @@ module IParty
       Address.new(input.to_i, input.family)
     when Integer
       family ||= input > (2**32) - 1 ? Socket::AF_INET6 : Socket::AF_INET
+      family = Socket::AF_INET6 if family == :ipv6 || family == 6 # Socket::AF_INET6 = 30
+      family = Socket::AF_INET if family == :ipv4 || family == 4 # Socket::AF_INET = 2
       Address.new(input, family, **kw)
     else
       raise IPAddr::InvalidAddressError, "invalid address: #{input}"
