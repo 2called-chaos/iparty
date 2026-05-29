@@ -15,10 +15,10 @@ By default IParty will use this proc (and you may change it) to turn a URL (to a
 Note: This requires a unix-oid environment with curl, tar and gzip available.
 
 ```ruby
-IParty::MaxMind.download_proc = proc do |url, temp_dir|
-  auth = %{-u "#{account_id}:#{license_key}"} if account_id && license_key
+IParty.config.url_to_mmdb = proc do |url, dir, config|
+  auth = %{-u "#{config.account_id}:#{config.license_key}"} if config.account_id && config.license_key
   curl = %{curl -L -s #{"#{auth} " if auth}"#{url}"}
-  tar = %{tar xz --strip-components 1 --exclude "*.txt" --no-same-owner -C #{temp_dir.to_s.shellescape}}
+  tar = %{tar xz --strip-components 1 --exclude "*.txt" --no-same-owner -C #{dir.to_s.shellescape}}
   system("#{curl} | #{tar}")
 end
 ```

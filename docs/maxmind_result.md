@@ -61,7 +61,7 @@ IParty::MaxMind::Result::Geo.define_attr(:best_tenant, export: true) { continent
 IParty::MaxMind::Result::Geo.define_attr(:short, export: true) { [continent.code, country.name].compact.join(" / ") }
 IParty::MaxMind::Result::Asn.define_attr(:short, export: :asn_short) { "AS#{number} #{organization}" }
 IParty::Address.define_method(:detailed) { "#{to_s} -- #{geo.detailed} -- #{asn_short}" }
-# IParty(ip).short/asn_short/detailed
+# IParty(ip).best_tenant/short/asn_short/detailed
 
 # Delegate geo/asn methods so you can do `ip.METHOD` instead of `ip.geo.METHOD`
 IParty::Address.def_delegators(:geo, *%i[registered_country])

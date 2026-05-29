@@ -123,7 +123,7 @@ ip.country.name(:es, fallback_locale: :fr) == "Germany"
 ip.country.dig(:names, :en) == "Germany"
 ```
 
-You should definitely take a quick look at the documentation, specifically about the [MaxMine::Result](docs/maxmind_result.md) object.
+You should definitely take a quick look at the documentation, specifically about the [MaxMind::Result](docs/maxmind_result.md) object.
 It should be intuitive magic but you may scratch your head if you "don't get it".
 
 
