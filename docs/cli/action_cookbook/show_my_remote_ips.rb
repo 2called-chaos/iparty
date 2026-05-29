@@ -12,8 +12,8 @@ def dispatch_me
     Net::HTTP.get(URI(url))
   rescue Socket::ResolutionError
     formatter.colorize? ? c("SOCKET_ERROR", :red) : :SOCKET_ERROR
-  rescue StandardError
-    formatter.colorize? ? c("ERROR", :red) : :ERROR
+  rescue StandardError => ex
+    formatter.colorize? ? c("ERROR-#{ex.class}", :red) : :"ERROR-#{ex.class}"
   end
 
   if @argv.delete("short")
@@ -24,8 +24,10 @@ def dispatch_me
       )
     end
   else
-    @argv << get_ip["https://api.ipify.org"]
-    @argv << get_ip["https://api6.ipify.org"]
+    @argv.concat([
+      get_ip["https://api.ipify.org"],
+      get_ip["https://api6.ipify.org"],
+    ].reject{ _1.include?("ERROR") })
     dispatch_info
   end
 end
