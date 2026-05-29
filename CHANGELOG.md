@@ -1,7 +1,8 @@
 ## [Unreleased]
 
 * Add to ASN `define_attr(:autonomous_system_name, aliases: :name, export: true) { "AS#{number}" if number }`
-* Add ipaddr dependency (it's stdlib but whatever)
+* Add ipaddr (stdlib) dependency
+* Add shellwords (stdlib) dependency
 
 
 

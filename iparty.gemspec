@@ -38,5 +38,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "ipaddr"
   spec.add_dependency "optparse"
   spec.add_dependency "pathname"
+  spec.add_dependency "shellwords"
   spec.add_dependency "tmpdir"
 end

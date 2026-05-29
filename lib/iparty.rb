@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "shellwords"
 require "pathname"
 require "tmpdir"
 require "fileutils"
