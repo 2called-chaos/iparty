@@ -42,6 +42,8 @@ module IParty
     addr = case input
     when String
       Address.new(input.strip, **kw)
+    when IParty::Address
+      Address.new(input.to_i(significant: true), input.family)
     when IPAddr
       Address.new(input.to_i, input.family)
     when Integer

@@ -20,6 +20,13 @@ RSpec.describe IParty do
       expect(IParty.normalize(IParty("1.2.3.4")).to_s).to eq "1.2.3.4"
     end
 
+    it "normalizes insignificant address correctly" do
+      ip = IParty.normalize("2606:4700:4700::1001", significant: false)
+      ip2 = IParty.normalize(ip)
+      expect(ip2.ipv6_significant).to be true
+      expect(ip2.to_s).to eq ip.to_s(significant: true)
+    end
+
     it "autodetects longs" do
       expect(IParty.normalize(123_456).to_s).to eq "0.1.226.64"
       expect(IParty.normalize((2**32) - 1).to_s).to eq "255.255.255.255"
