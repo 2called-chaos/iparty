@@ -6,6 +6,7 @@
 * `IParty.normalize`, when given an integer as address, will accept as family: 4 6 :ipv4 :ipv6 (also Socket::AF_INET Socket::AF_INET6 as before)
 * `IParty.config.singletons = true` will no longer cause immediate init of database objects. Use `IParty.config.init_singletons!` after you've set all options if you want "true behaviour".
   If the value is set to true `init_singletons!` will be called the first time a database object is initialized.
+* Compact input to expand_hostnames
 * Add dev script to test performance with rbspy
 * [doc] Add CurrentAttribute example for AS<8
 * [cli] Add cookbook helper

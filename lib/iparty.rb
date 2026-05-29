@@ -63,7 +63,7 @@ module IParty
   end
 
   def self.expand_hostnames *ips_or_hosts
-    ips_or_hosts.flatten.flat_map do |name|
+    ips_or_hosts.flatten.compact.flat_map do |name|
       next name unless name.is_a?(String) && !name.include?(":") && name.match?(/[a-z]/i)
 
       if defined?(Resolv)

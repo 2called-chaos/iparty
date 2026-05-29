@@ -73,7 +73,7 @@ RSpec.describe IParty do
       before { hide_const("Resolv") }
 
       it "resolves valid" do
-        expect(IParty.expand_hostnames("one.one.one.one", "8.8.8.8").sort).to eq %w[1.0.0.1 1.1.1.1 2606:4700:4700::1001 2606:4700:4700::1111 8.8.8.8]
+        expect(IParty.expand_hostnames("one.one.one.one", nil, "8.8.8.8").sort).to eq %w[1.0.0.1 1.1.1.1 2606:4700:4700::1001 2606:4700:4700::1111 8.8.8.8]
       end
 
       it "resolves invalid to empty array" do
