@@ -1,6 +1,6 @@
 ## [Unreleased]
 
-## [0.1.3] - Unreleased
+## [0.1.3] - 2026-05-29
 
 * Fix: Correctly re-normalize insignificant ipv6 IParty::Address
 * Fix: `significant: true` option on insignificant ipv6 IParty::Address#to_s
