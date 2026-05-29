@@ -34,6 +34,12 @@ module IParty
     Address.from_insignificant(long, **kw)
   end
 
+  def self.classify input
+    normalize(input).type
+  rescue IPAddr::Error
+    :invalid
+  end
+
   def self.normalize input, family = nil, native: false, **kw
     return unless input
     return if input.is_a?(String) && input.match?(/\A[[:space:]]*\z/)
@@ -48,9 +54,7 @@ module IParty
       Address.new(input.to_i, input.family)
     when Integer
       family ||= input > (2**32) - 1 ? Socket::AF_INET6 : Socket::AF_INET
-      family = Socket::AF_INET6 if family == :ipv6 || family == 6 # Socket::AF_INET6 = 30
-      family = Socket::AF_INET if family == :ipv4 || family == 4 # Socket::AF_INET = 2
-      Address.new(input, family, **kw)
+      Address.new(input, normalize_family(family), **kw)
     else
       raise IPAddr::InvalidAddressError, "invalid address: #{input}"
     end
@@ -58,10 +62,17 @@ module IParty
     native ? addr.native : addr
   end
 
-  def self.classify input
-    normalize(input).type
-  rescue IPAddr::Error
-    :invalid
+  def self.normalize_family family
+    case family
+    when :ipv6, 6, 30 # Socket::AF_INET6 = 30
+      Socket::AF_INET6
+    when :ipv4, 4, 2 # Socket::AF_INET = 2
+      Socket::AF_INET
+    when nil
+      raise IPAddr::AddressFamilyError, "address family must be specified"
+    else
+      raise IPAddr::AddressFamilyError, "unsupported address family: #{family}"
+    end
   end
 
   def self.expand_hostnames *ips_or_hosts
