@@ -3,6 +3,7 @@
 ## [0.1.3] - Unreleased
 
 * Fix: Correctly re-normalize insignificant ipv6 IParty::Address
+* Fix: `significant: true` option on insignificant ipv6 IParty::Address#to_s
 * Add `IParty.normalize_family` to allow all of Socket constant, 4/6 or :ipv4/:ipv6
 * Add `IParty.insignificant(long)` and `IParty::Address.from_insignificant(long)` to get address from insignificant ipv6-long
 * `IParty.normalize`, when given an integer as address, will accept as family: 4 6 :ipv4 :ipv6 (also Socket::AF_INET Socket::AF_INET6 as before)

@@ -21,7 +21,7 @@ module IParty
     end
 
     def force_significant?
-      @family == Socket::AF_INET6 && @addr == 1
+      @family == Socket::AF_INET6 && (@addr == 1 || ipv4_mapped? || ipv4_compat?)
     end
 
     def type
@@ -36,7 +36,7 @@ module IParty
       if ipv4?
         2**(32 - prefix)
       elsif ipv6?
-        if force_significant? || significant || ipv4_mapped? || ipv4_compat?
+        if significant || force_significant?
           2**(128 - prefix)
         else
           2**[0, 128 - prefix - 64].max
@@ -85,26 +85,31 @@ module IParty
     end
 
     def prefix significant: ipv6_significant
-      return super() if force_significant? || significant || !ipv6? || ipv4_mapped? || ipv4_compat? || super() <= 64
+      return super() if significant || force_significant? || super() <= 64
 
       64
     end
 
     def to_i significant: ipv6_significant
-      return super() if force_significant? || significant || !ipv6? || ipv4_mapped? || ipv4_compat? || prefix(significant: true) <= 64
+      return super() if significant || force_significant? || prefix(significant: true) <= 64
 
       # drop upper 64 bits / host-identifier of ipv6
       (super() >> 64) & ((1 << 64) - 1)
     end
 
+    alias_method :original_to_s, :to_s
     def to_s significant: ipv6_significant
-      return super() if force_significant? || significant || !ipv6? || ipv4_mapped? || ipv4_compat? || prefix(significant: true) <= 64
+      return original_to_s unless @family == Socket::AF_INET6
 
-      mask(64).to_s(significant: true)
+      if significant || force_significant? || prefix(significant: true) <= 64
+        to_significant.original_to_s
+      else
+        mask(64).original_to_s
+      end
     end
 
     def to_string significant: ipv6_significant
-      return super() if force_significant? || significant || !ipv6? || ipv4_mapped? || ipv4_compat? || prefix(significant: true) <= 64
+      return super() if significant || force_significant? || prefix(significant: true) <= 64
 
       mask(64).to_string(significant: true)
     end
