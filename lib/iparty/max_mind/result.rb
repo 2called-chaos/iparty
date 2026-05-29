@@ -148,8 +148,9 @@ module IParty
 
         define_attr(:autonomous_system_network, aliases: :network, export: true)
         define_attr(:autonomous_system_number, aliases: :number, export: true)
+        define_attr(:autonomous_system_name, aliases: :name, export: true) { "AS#{number}" if number }
         define_attr(:autonomous_system_organization, aliases: :organization, export: true)
-        define_attr(:autonomous_system_detailed, aliases: :detailed, export: true) { "AS#{number} #{organization}" if number }
+        define_attr(:autonomous_system_detailed, aliases: :detailed, export: true) { "AS#{number} #{organization}".strip if number }
       end
 
       class Geo < Result

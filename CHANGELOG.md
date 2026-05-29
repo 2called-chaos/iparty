@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+* Add to ASN `define_attr(:autonomous_system_name, aliases: :name, export: true) { "AS#{number}" if number }`
+
+
+
 ## [0.1.3] - 2026-05-29
 
 * Fix: Correctly re-normalize insignificant ipv6 IParty::Address
