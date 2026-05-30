@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+* Fix: `significant: true` option on insignificant ipv6 IParty::Address#size
+* Test all methods with significant keyword on equality
+
+
+
 ## [0.1.4] - 2026-05-30
 
 * Add to ASN `define_attr(:autonomous_system_name, aliases: :name, export: true) { "AS#{number}" if number }`

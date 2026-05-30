@@ -37,9 +37,9 @@ module IParty
         2**(32 - prefix)
       elsif ipv6?
         if significant || force_significant?
-          2**(128 - prefix)
+          2**(128 - prefix(significant: true))
         else
-          2**[0, 128 - prefix - 64].max
+          2**[0, 128 - prefix(significant: false) - 64].max
         end
       end
     end

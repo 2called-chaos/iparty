@@ -164,5 +164,17 @@ RSpec.describe IParty::Address do
       end
     end
   end
+
+  describe "v6 significance keyword equality" do
+    IParty::Address.instance_methods.each do |method|
+      next unless IParty::Address.instance_method(method).parameters.any?{ _1 == %i[key significant] }
+
+      it "equals on #{method}" do
+        significant = IParty("2001:9e8:4aa4:9700:840a:f1ad:2838:f58d", significant: true)
+        insignificant = IParty("2001:9e8:4aa4:9700:840a:f1ad:2838:f58d", significant: false)
+        expect(significant.send(method)).to eq insignificant.send(method, significant: true)
+      end
+    end
+  end
 end
 # rubocop:enable Style/NumericLiterals
