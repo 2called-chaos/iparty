@@ -12,7 +12,7 @@ RSpec.describe IParty::CLI::Application::IrbContext do
   let(:app_env) { {} }
   let(:app_argv) { ["--no-rc", "-m"] }
   let(:app_argf) { [] }
-  let(:app) { IParty::CLI::Application.new(env: app_env, argv: app_argv, argf: app_argf).tap(&:parse_options!) }
+  let(:app) { IParty::CLI::Application.new(env: app_env, argv: app_argv, argf: app_argf, &:parse_options!) }
 
   it "prints help" do
     irb_ctx.to_s

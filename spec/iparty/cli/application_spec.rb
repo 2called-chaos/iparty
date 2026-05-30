@@ -43,6 +43,20 @@ RSpec.describe IParty::CLI::Application do
     expect{ app.dispatch }.to output(/Usage: iparty/).to_stdout.and output("invalid option: --thisdoesnotexist\n").to_stderr
   end
 
+  it "dispatches help with invalid formatter" do
+    app.argv << "-f" << "thisdoesnotexist" << "foo"
+    expect do
+      expect{ app.dispatch }.to raise_error(SystemExit)
+    end.to output(/# Available formatters \(-f\)/).to_stdout.and output("unknown formatter: thisdoesnotexist\n").to_stderr
+  end
+
+  it "aborts with invalid action" do
+    app.argv << "-d" << "thisdoesnotexist"
+    expect do
+      expect{ app.dispatch }.to raise_error(SystemExit)
+    end.to output("unknown action: thisdoesnotexist (does not respond to #dispatch_thisdoesnotexist)\n").to_stderr
+  end
+
   it "dispatches help (-h)" do
     app.argv << "-h"
     expect{ app.dispatch }.to_not output(/\e\[0m/).to_stdout
@@ -64,6 +78,15 @@ RSpec.describe IParty::CLI::Application do
   it "dispatches ipinfo for localhost" do
     app.argv << "127.0.0.0"
     expect{ app.dispatch }.to output("   type: ipv4[/32]\nnetwork: 127.0.0.0/8\n").to_stdout
+  end
+
+  it "annotates localhost" do
+    IParty.with_config do |config|
+      config.annotate "127.0.0.0/8", name: "loopback", tags: %i[local]
+
+      app.argv << "127.1.2.3/16"
+      expect{ app.dispatch }.to output("   type: ipv4[/16]\n   cidr: 127.1.0.0/16\nnetwork: 127.0.0.0/8\n   name: loopback\n   tags: local\n").to_stdout
+    end
   end
 
   it "reads from stdin" do
@@ -115,6 +138,11 @@ RSpec.describe IParty::CLI::Application do
   it "dispatches ipinfo --except" do
     app.argv << "-a" << "4.78.241.0" << "-e" << "cidr"
     expect{ app.dispatch }.to_not output(/cidr:/).to_stdout
+  end
+
+  it "dispatches ipinfo -l all" do
+    app.argv << "-a" << "4.78.241.0" << "-l" << "all"
+    expect{ app.dispatch }.to output(/names:.+es: Estados Unidos/m).to_stdout
   end
 
   describe "Resolv hostname lookup" do
