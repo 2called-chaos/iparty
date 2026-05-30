@@ -158,7 +158,6 @@ RSpec.describe IParty::CLI::Application do
     it "formats with string formatter" do
       app.argv << "4.78.241.0" << "2001:708:510:8:9a6:442c:f8e0:7133"
       app.argv << "-af" << "%{country.name} / %{subdivisions.-1.name} / %{city.name}"
-      app.dispatch
       expect{ app.dispatch }.to output("United States / California / San Francisco\nFinland / Uusimaa / Espoo\n").to_stdout
     end
   end

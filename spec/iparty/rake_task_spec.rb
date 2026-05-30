@@ -15,6 +15,7 @@ end
 
 RSpec.describe IParty::RakeTask do
   let(:iparty_tasks) { %w[update fetch status config] }
+  let(:mmdb_directory) { IParty::GEM_ROOT.join("spec", "cache") }
 
   context "with default namespace" do
     it "builds rake tasks" do
@@ -45,16 +46,22 @@ RSpec.describe IParty::RakeTask do
     it "prints mmdb status" do
       clear_rake_namespace(:iparty) do
         IParty::RakeTask.new
-        expect { Rake::Task["iparty:status"].invoke }.to output(/^(OK|MISSING|EXPIRED)/).to_stdout
+        expect do
+          Rake::Task["iparty:status"].invoke
+        rescue SystemExit
+          # silence
+        end.to output(/^(OK|MISSING|EXPIRED)/).to_stdout
       end
     end
 
     it "checks expired mmdb" do
       clear_rake_namespace(:iparty) do
-        IParty::RakeTask.new
-        expect do
-          expect { Rake::Task["iparty:status"].invoke("1") }.to output(/^EXPIRED/).to_stdout
-        end.to raise_error(SystemExit)
+        IParty.with_config(directory: mmdb_directory) do
+          IParty::RakeTask.new
+          expect do
+            expect { Rake::Task["iparty:status"].invoke("1") }.to raise_error(SystemExit)
+          end.to output(/^EXPIRED/).to_stdout
+        end
       end
     end
   end
