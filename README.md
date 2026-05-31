@@ -7,6 +7,7 @@ Makes (geo) IP fun again! Ain't no party like an IParty, because an IParty don't
 
 ```ruby
 IParty.fetch_db_files! # api key required
+IParty.config.annotate("217.5.100.185", name: "Telekom DNS", tags: %i[dns])
 ip = IParty(request.remote_ip)
 
 # all these are true
@@ -15,6 +16,9 @@ ip.country.germany?
 ip.country.in_european_union?
 ip.country.is_a?(Hash)
 ip.country == "Germany" # 🤨
+ip.asn.organization == "Deutsche Telekom AG"
+ip.annotations[:name] == "Telekom DNS"
+ip.tag?(:dns)
 ```
 
 * IParty handles download\* and decoding of, and lookup in, mmdb-files (\* = shelling to curl and tar)
@@ -108,7 +112,7 @@ IParty::RakeTask.new
 #### Basic usage
 
 ```ruby
-ip = IParty("1.2.3.4") # shorthand for IParty.normalize
+ip = IParty("217.5.100.185") # shorthand for IParty.normalize
 ip.as_json
 
 # all these are true
@@ -117,7 +121,7 @@ ip.country.germany?
 ip.country.in_european_union?
 ip.country.is_a?(Hash)
 ip.country == "Germany" # 🤨
-ip.country == 123_345 # you may want to read the docs at this point lol
+ip.country == 2_921_044 # you may want to read the docs at this point lol
 ip.country.names.de == "Deutschland"
 ip.country.name(:es, fallback_locale: :fr) == "Germany"
 ip.country.dig(:names, :en) == "Germany"
