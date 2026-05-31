@@ -135,6 +135,7 @@ module IParty
 
       result = {}
       IParty.config.annotations&.each do |ipp, adata|
+        next if ipp.is_a?(Symbol)
         next unless ipp.include?(self)
 
         result.merge!(adata.merge(tags: result.fetch(:tags, []) | adata.fetch(:tags, [])))

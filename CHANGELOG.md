@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+* Allow arbitrary data on annotation hash by using a Symbol as key
 * Fix: `significant: true` option on insignificant ipv6 IParty::Address#size
 * Test all methods with significant keyword on equality
 
