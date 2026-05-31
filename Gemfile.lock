@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    iparty (0.1.4)
+    iparty (0.1.5)
       fileutils
       forwardable
       ipaddr
@@ -133,7 +133,7 @@ CHECKSUMS
   forwardable (1.4.0) sha256=f1cd40cc9812937980e1c76f1aa053660990a7c9b6a98fc37d945468afcce838
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   ipaddr (1.2.9) sha256=0f858a7b2e45def81ad2acf7997af77f2837709fa3b3acbbc05f33cfcc03deb7
-  iparty (0.1.4)
+  iparty (0.1.5)
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   json (2.19.5) sha256=218a18553e4801d579ca7e0f5bc72bafd776d7397238a1fb4e74db5b0a812c59
   language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
